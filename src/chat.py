@@ -1,7 +1,7 @@
 import openai
 
 # Configura tu clave de API de OpenAI
-openai.api_key = "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"
+openai.api_key = ""
 
 # Variable global para almacenar la última consulta
 ultima_consulta = ""
