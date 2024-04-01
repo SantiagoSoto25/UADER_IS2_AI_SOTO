@@ -1,7 +1,10 @@
 import openai
 
 # Configura tu clave de API de OpenAI
-openai.api_key = "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"
+openai.api_key = "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"
+
+# Variable global para almacenar la última consulta
+ultima_consulta = ""
 
 def chatGPT_respuesta(consulta):
     try:
@@ -20,6 +23,8 @@ def chatGPT_respuesta(consulta):
         return None
 
 def main():
+    global ultima_consulta  # Accede a la variable global
+
     while True:
         try:
             # Solicita la consulta al usuario
@@ -34,6 +39,7 @@ def main():
             if consulta_usuario.strip():
                 # Imprime la consulta del usuario con el prefijo "You:"
                 print("You:", consulta_usuario)
+                ultima_consulta = consulta_usuario  # Actualiza la última consulta
 
                 # Obtiene la respuesta de chatGPT
                 respuesta_chatGPT = chatGPT_respuesta(consulta_usuario)
@@ -45,6 +51,13 @@ def main():
                     print("No se pudo obtener una respuesta del modelo.")
             else:
                 print("La consulta está vacía. Por favor, ingresa una consulta válida.")
+        except KeyboardInterrupt:
+            # Captura la excepción de interrupción del teclado (cursor Up)
+            print("\nEditando última consulta:", ultima_consulta)
+            consulta_usuario = input("Edita tu consulta o presiona 'Enter' para enviar la misma: ")
+            if consulta_usuario.strip():
+                ultima_consulta = consulta_usuario  # Actualiza la última consulta con la nueva
+            continue
         except Exception as e:
             print("Error en la ejecución del programa:", e)
 
