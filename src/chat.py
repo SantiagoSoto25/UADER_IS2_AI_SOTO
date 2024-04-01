@@ -1,7 +1,7 @@
 import openai
 
 # Configura tu clave de API de OpenAI
-openai.api_key = 
+openai.api_key = ""
 
 def chatGPT_respuesta(consulta):
     # Envía la consulta al modelo de chatGPT
