@@ -1,36 +1,52 @@
 import openai
 
 # Configura tu clave de API de OpenAI
-openai.api_key = ""
+openai.api_key = "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"
 
 def chatGPT_respuesta(consulta):
-    # Envía la consulta al modelo de chatGPT
-    respuesta = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo-0125",
-        messages=[
-            {"role": "user", "content": consulta}
-        ],
-        temperature=0.7,
-        max_tokens=150
-    )
-    return respuesta.choices[0].message['content'].strip()
+    try:
+        # Envía la consulta al modelo de chatGPT
+        respuesta = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo-0125",
+            messages=[
+                {"role": "user", "content": consulta}
+            ],
+            temperature=0.7,
+            max_tokens=150
+        )
+        return respuesta.choices[0].message['content'].strip()
+    except Exception as e:
+        print("Error al invocar el modelo de chatGPT:", e)
+        return None
 
 def main():
-    # Solicita la consulta al usuario
-    consulta_usuario = input("Por favor, ingresa tu consulta: ")
+    while True:
+        try:
+            # Solicita la consulta al usuario
+            consulta_usuario = input("Por favor, ingresa tu consulta (o 'exit' para salir): ")
 
-    # Verifica si la consulta tiene texto
-    if consulta_usuario.strip():
-        # Imprime la consulta del usuario con el prefijo "You:"
-        print("You:", consulta_usuario)
+            # Verifica si el usuario quiere salir
+            if consulta_usuario.lower() == 'exit':
+                print("Saliendo del programa...")
+                break
 
-        # Obtiene la respuesta de chatGPT
-        respuesta_chatGPT = chatGPT_respuesta(consulta_usuario)
+            # Verifica si la consulta tiene texto
+            if consulta_usuario.strip():
+                # Imprime la consulta del usuario con el prefijo "You:"
+                print("You:", consulta_usuario)
 
-        # Imprime la respuesta de chatGPT con el prefijo "chatGPT:"
-        print("chatGPT:", respuesta_chatGPT)
-    else:
-        print("La consulta está vacía. Por favor, ingresa una consulta válida.")
+                # Obtiene la respuesta de chatGPT
+                respuesta_chatGPT = chatGPT_respuesta(consulta_usuario)
+
+                if respuesta_chatGPT:
+                    # Imprime la respuesta de chatGPT con el prefijo "chatGPT:"
+                    print("chatGPT:", respuesta_chatGPT)
+                else:
+                    print("No se pudo obtener una respuesta del modelo.")
+            else:
+                print("La consulta está vacía. Por favor, ingresa una consulta válida.")
+        except Exception as e:
+            print("Error en la ejecución del programa:", e)
 
 if __name__ == "__main__":
     main()
