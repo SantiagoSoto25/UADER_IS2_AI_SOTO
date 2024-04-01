@@ -9,7 +9,7 @@ buffer_conversacion = []
 ultima_consulta = ""
 
 def chatGPT_respuesta(consulta):
-    global ultima_consulta  # Accede a la variable global
+    global ultima_consulta
     try:
         # Envía la consulta al modelo de chatGPT
         respuesta = openai.ChatCompletion.create(
@@ -20,15 +20,15 @@ def chatGPT_respuesta(consulta):
             temperature=0.7,
             max_tokens=150
         )
-        ultima_consulta = consulta  # Actualiza la última consulta
+        ultima_consulta = consulta
         return respuesta.choices[0].message['content'].strip()
     except Exception as e:
         print("Error al invocar el modelo de chatGPT:", e)
         return None
 
 def main():
-    global buffer_conversacion  # Accede a la variable global
-    global ultima_consulta  # Accede a la variable global
+    global buffer_conversacion
+    global ultima_consulta
 
     # Configura el parser de argumentos de línea de comandos
     parser = argparse.ArgumentParser(description='ChatGPT')
@@ -54,7 +54,7 @@ def main():
             if consulta_usuario.strip():
                 # Imprime la consulta del usuario con el prefijo "You:"
                 print("You:", consulta_usuario)
-                
+
                 # Agrega la consulta al buffer de conversación
                 buffer_conversacion.append(consulta_usuario)
 
