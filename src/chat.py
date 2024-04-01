@@ -1,12 +1,15 @@
+import argparse
 import openai
 
 # Configura tu clave de API de OpenAI
-openai.api_key = ""
+openai.api_key = 'tu-clave-de-api'
 
-# Variable global para almacenar la última consulta
+# Variable global para almacenar el buffer de conversación
+buffer_conversacion = []
 ultima_consulta = ""
 
 def chatGPT_respuesta(consulta):
+    global ultima_consulta  # Accede a la variable global
     try:
         # Envía la consulta al modelo de chatGPT
         respuesta = openai.ChatCompletion.create(
@@ -17,13 +20,25 @@ def chatGPT_respuesta(consulta):
             temperature=0.7,
             max_tokens=150
         )
+        ultima_consulta = consulta  # Actualiza la última consulta
         return respuesta.choices[0].message['content'].strip()
     except Exception as e:
         print("Error al invocar el modelo de chatGPT:", e)
         return None
 
 def main():
+    global buffer_conversacion  # Accede a la variable global
     global ultima_consulta  # Accede a la variable global
+
+    # Configura el parser de argumentos de línea de comandos
+    parser = argparse.ArgumentParser(description='ChatGPT')
+    parser.add_argument('--convers', action='store_true', help='Activa el modo de conversación')
+    args = parser.parse_args()
+
+    if args.convers:
+        print("Modo de conversación activado.")
+    else:
+        print("Modo de conversación desactivado.")
 
     while True:
         try:
@@ -39,14 +54,19 @@ def main():
             if consulta_usuario.strip():
                 # Imprime la consulta del usuario con el prefijo "You:"
                 print("You:", consulta_usuario)
-                ultima_consulta = consulta_usuario  # Actualiza la última consulta
+                
+                # Agrega la consulta al buffer de conversación
+                buffer_conversacion.append(consulta_usuario)
 
-                # Obtiene la respuesta de chatGPT
-                respuesta_chatGPT = chatGPT_respuesta(consulta_usuario)
+                # Obtiene la respuesta de chatGPT usando la última consulta o todas las anteriores
+                respuesta_chatGPT = chatGPT_respuesta("\n".join(buffer_conversacion))
 
                 if respuesta_chatGPT:
                     # Imprime la respuesta de chatGPT con el prefijo "chatGPT:"
                     print("chatGPT:", respuesta_chatGPT)
+
+                    # Agrega la respuesta de chatGPT al buffer de conversación para reenviarla en próximas consultas
+                    buffer_conversacion.append(respuesta_chatGPT)
                 else:
                     print("No se pudo obtener una respuesta del modelo.")
             else:
